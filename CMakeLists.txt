@@ -13,17 +13,30 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(OpenCV REQUIRED)
+find_package(X11 REQUIRED)
 
 set(SOURCES
   src/main.cpp
+  
+  # gui
+  src/gui/window.cpp
+
+  # system
+  src/system/screen.cpp
 )
 
 set(HEADERS
   include/globals.h
+  
+  # gui
+  include/gui/window.h
+
+  # system
+  include/system/screen.h
 )
 
 include_directories (${CMAKE_SOURCE_DIR}/include)
 
 qt_add_executable(FilterCV ${SOURCES} ${HEADERS})
 
-target_link_libraries(FilterCV PRIVATE Qt6::Widgets ${OpenCV_LIBS})
+target_link_libraries(FilterCV PRIVATE X11 Qt6::Widgets ${OpenCV_LIBS} X11::X11 X11::Xrandr)
