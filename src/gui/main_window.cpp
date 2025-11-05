@@ -1,4 +1,4 @@
-#include "gui/window.h"
+#include "gui/main_window.h"
 
 #include <QString>
 #include <QImage>
@@ -14,7 +14,7 @@
 namespace gui
 {
 
-window::window (const QString &title, int width, int height)
+main_window::main_window (const QString &title, int width, int height)
 {
   widget.setWindowTitle (title);
   widget.resize (width, height);
@@ -27,11 +27,11 @@ window::window (const QString &title, int width, int height)
   image->show ();
 }
 
-void window::show ()
+void main_window::show ()
 {
   widget.show ();
 }
 
-window::~window () {}
+main_window::~main_window () {}
 
 }

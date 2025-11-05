@@ -19,7 +19,7 @@ set(SOURCES
   src/main.cpp
   
   # gui
-  src/gui/window.cpp
+  src/gui/main_window.cpp
   src/gui/utils.cpp
 
   # system
@@ -30,7 +30,7 @@ set(HEADERS
   include/globals.h
   
   # gui
-  include/gui/window.h
+  include/gui/main_window.h
   include/gui/utils.h
 
   # system
