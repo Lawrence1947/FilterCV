@@ -34,6 +34,10 @@ set(HEADERS
   include/gui/image_widget.h
   include/gui/utils.h
 
+  # filters
+  include/filters/filter.h
+  include/filters/grayscale.h
+
   # system
   include/system/screen.h
 )
