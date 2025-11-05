@@ -54,6 +54,7 @@ void main_window::build_dock ()
   build_source_dock ();
 
   auto *dock = new QDockWidget (tr ("Settings"), this);
+  dock->setFeatures (QDockWidget::NoDockWidgetFeatures);
   dock->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
   auto *panel = new QWidget (dock);
@@ -77,6 +78,7 @@ void main_window::build_dock ()
 void main_window::build_source_dock ()
 {
   auto *dock = new QDockWidget (tr ("Source"), this);
+  dock->setFeatures (QDockWidget::NoDockWidgetFeatures);
   dock->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
   auto *panel = new QWidget (dock);
