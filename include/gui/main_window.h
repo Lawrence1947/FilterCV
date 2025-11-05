@@ -2,23 +2,32 @@
 #define MAIN_WINDOW_H
 
 #include <QImage>
-
+#include <QLabel>
 #include <QWidget>
+
+#include <opencv2/opencv.hpp>
 
 namespace gui
 {
 
-class main_window
+class main_window : public QWidget
 {
+  Q_OBJECT
 public:
-  main_window (const QString &title, int width, int height);
+  explicit main_window (QWidget *parent = nullptr);
 
-  void show ();
+  void set_image (const cv::Mat &mat);
 
   ~main_window ();
 
+protected:
+  void resizeEvent (QResizeEvent *event) override;
+
 private:
-  QWidget widget;
+  QLabel *image_label = nullptr;
+  QImage original;
+  
+  void update_scaled_pixmap ();
 };
 
 }
