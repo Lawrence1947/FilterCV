@@ -17,6 +17,8 @@ void cv_engine::clear_filters ()
 
 void cv_engine::add_filter (std::shared_ptr<filters::filter> filter)
 { 
+  if (!filter)
+    return;
   pipeline.push_back (std::move (filter));
 }
 
