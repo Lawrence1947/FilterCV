@@ -4,6 +4,10 @@
 #include <QVBoxLayout>
 #include <QDockWidget>
 #include <QFormLayout>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QSlider>
+#include <QLabel>
 
 #include <opencv2/opencv.hpp>
 
@@ -65,6 +69,9 @@ void main_window::build_dock ()
   v->setContentsMargins(8, 8, 8, 8);
 
   add_grayscale_filter (v, panel);
+  add_blur_filter (v, panel);
+
+  v->addStretch (1);
 
   panel->setLayout (v);
   dock->setWidget (panel);
@@ -75,11 +82,57 @@ void main_window::add_grayscale_filter (QVBoxLayout *v, QWidget *panel)
 {
   cb_grayscale = new QCheckBox (tr ("Grayscale"), panel);
   v->addWidget (cb_grayscale);
-  v->addStretch (1);
 
   connect (cb_grayscale, &QCheckBox::toggled, this, [this] (bool on) {
     if (auto f = engine->find_filter ("grayscale")) 
       f->set_enabled (on);
+  });
+}
+
+void main_window::add_blur_filter (QVBoxLayout *v, QWidget *panel)
+{
+  auto *form = new QFormLayout ();
+  form->setContentsMargins (0, 0, 0, 0);
+  form->setSpacing (6);
+
+  sl_blur_ksize = new QSlider (Qt::Horizontal, panel);
+  sl_blur_ksize->setRange (0, 99);
+  sl_blur_ksize->setSingleStep (2);
+  sl_blur_ksize->setPageStep (2);
+  sl_blur_ksize->setTickPosition (QSlider::TicksBelow);
+  sl_blur_ksize->setTickInterval (4);
+  sl_blur_ksize->setValue (0);
+
+  lb_blur_value = new QLabel (QString::number (0), panel);
+  lb_blur_value->setMinimumWidth (30);
+  lb_blur_value->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
+
+  auto *h = new QHBoxLayout ();
+  h->setContentsMargins (0, 0, 0, 0);
+  h->setSpacing (6);
+  h->addWidget (sl_blur_ksize, /*stretch*/ 1);
+  h->addWidget (lb_blur_value);
+
+  form->addRow (tr ("Blur"), h);
+  v->addLayout (form);
+
+  connect (sl_blur_ksize, &QSlider::valueChanged, this, [this] (int k) {
+    if (k > 0 && (k % 2 == 0))
+      {
+        sl_blur_ksize->blockSignals (true);
+        sl_blur_ksize->setValue (k + 1);
+        sl_blur_ksize->blockSignals (false);
+        k = k + 1;
+      }
+
+    lb_blur_value->setText (QString::number (k));
+
+    auto base = engine->find_filter ("blur");
+    if (!base) return;
+    auto f = std::dynamic_pointer_cast<filters::blur> (base);
+    if (!f) return;
+
+    f->set_ksize (k);
   });
 }
 

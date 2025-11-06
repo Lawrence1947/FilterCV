@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QSlider>
+#include <QLabel>
 
 #include "core/cv_engine.h"
 
@@ -28,8 +30,6 @@ private:
   std::unique_ptr<core::cv_engine> engine;
   QTimer timer;
 
-  QCheckBox *cb_grayscale = nullptr;
-
   void build_ui ();
   void show_test_image ();
 
@@ -41,7 +41,12 @@ private:
   void build_dock ();
   void build_source_dock ();
 
+  QCheckBox *cb_grayscale = nullptr;
+  QSlider *sl_blur_ksize = nullptr;
+  QLabel *lb_blur_value = nullptr;
+
   void add_grayscale_filter (QVBoxLayout *v, QWidget *panel);
+  void add_blur_filter (QVBoxLayout *v, QWidget *panel);
 
 private slots:
   void onTick ();

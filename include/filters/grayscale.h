@@ -14,17 +14,17 @@ public:
   void set_enabled (bool on) override final { enabled = on; }
 
   void apply (const cv::Mat &src_bgr, cv::Mat &dst_bgr) override final 
-    {
-      if (!enabled) 
-        { 
-          dst_bgr = src_bgr;
-          return; 
-        }
+  {
+    if (!enabled) 
+      { 
+        dst_bgr = src_bgr;
+        return; 
+      }
 
-      cv::Mat gray; 
-      cv::cvtColor (src_bgr, gray, cv::COLOR_BGR2GRAY);
-      cv::cvtColor (gray, dst_bgr, cv::COLOR_GRAY2BGR);
-    }
+    cv::Mat gray; 
+    cv::cvtColor (src_bgr, gray, cv::COLOR_BGR2GRAY);
+    cv::cvtColor (gray, dst_bgr, cv::COLOR_GRAY2BGR);
+  }
 
 private:
   bool enabled = false;
