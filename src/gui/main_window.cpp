@@ -18,6 +18,7 @@
 #include "filters/grayscale.h"
 #include "filters/blur.h"
 #include "filters/canny.h"
+#include "filters/jpeg.h"
 
 namespace gui
 {
@@ -31,6 +32,7 @@ main_window::main_window (QWidget *parent) : QMainWindow (parent), engine (std::
   engine->add_filter (std::make_shared<filters::grayscale> ());
   engine->add_filter (std::make_shared<filters::blur> ());
   engine->add_filter (std::make_shared<filters::canny> ());
+  engine->add_filter (std::make_shared<filters::jpeg> ());
 
   timer.setInterval (33); // ~ 30 fps
   connect (&timer, &QTimer::timeout, this, &main_window::onTick);
@@ -73,6 +75,7 @@ void main_window::build_dock ()
   add_grayscale_filter (v, panel);
   add_blur_filter (v, panel);
   add_canny_filter (v, panel);
+  add_jpeg_filter (v, panel);
 
   v->addStretch (1);
 
@@ -303,6 +306,53 @@ void main_window::build_source_dock ()
       return;
     engine->set_camera_index (idx);
     engine->open ();
+  });
+}
+
+void main_window::add_jpeg_filter (QVBoxLayout *v, QWidget *panel)
+{
+  cb_jpeg = new QCheckBox (tr ("JPEG compress"), panel);
+  v->addWidget (cb_jpeg);
+
+  auto *form = new QFormLayout ();
+  form->setContentsMargins (0, 0, 0, 0);
+  form->setSpacing (6);
+
+  sl_jpeg_quality = new QSlider (Qt::Horizontal, panel);
+  sl_jpeg_quality->setRange (0, 100);
+  sl_jpeg_quality->setSingleStep (5);
+  sl_jpeg_quality->setPageStep (10);
+  sl_jpeg_quality->setTickPosition (QSlider::TicksBelow);
+  sl_jpeg_quality->setTickInterval (10);
+  sl_jpeg_quality->setValue (80);
+  sl_jpeg_quality->setEnabled (false);
+
+  lb_jpeg_quality = new QLabel (QString::number (80), panel);
+  lb_jpeg_quality->setMinimumWidth (30);
+  lb_jpeg_quality->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
+
+  auto *h = new QHBoxLayout ();
+  h->setContentsMargins (0, 0, 0, 0);
+  h->setSpacing (6);
+  h->addWidget (sl_jpeg_quality, 1);
+  h->addWidget (lb_jpeg_quality);
+
+  form->addRow (tr ("Quality"), h);
+  v->addLayout (form);
+
+  connect (cb_jpeg, &QCheckBox::toggled, this, [this] (bool on) {
+    if (auto base = engine->find_filter ("jpeg"))
+      base->set_enabled (on);
+    sl_jpeg_quality->setEnabled (on);
+  });
+
+  connect (sl_jpeg_quality, &QSlider::valueChanged, this, [this] (int q) {
+    lb_jpeg_quality->setText (QString::number (q));
+    auto base = engine->find_filter ("jpeg");
+    if (!base) return;
+    auto f = std::dynamic_pointer_cast<filters::jpeg> (base);
+    if (!f) return;
+    f->set_quality (q);
   });
 }
 

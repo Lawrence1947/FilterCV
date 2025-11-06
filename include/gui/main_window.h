@@ -53,10 +53,15 @@ private:
   QSlider *sl_canny_hi = nullptr;
   QLabel *lb_canny_lo = nullptr;
   QLabel *lb_canny_hi = nullptr;
+  // jpeg
+  QCheckBox *cb_jpeg = nullptr;
+  QSlider *sl_jpeg_quality = nullptr;
+  QLabel *lb_jpeg_quality = nullptr;
 
   void add_grayscale_filter (QVBoxLayout *v, QWidget *panel);
   void add_blur_filter (QVBoxLayout *v, QWidget *panel);
   void add_canny_filter (QVBoxLayout *v, QWidget *panel);
+  void add_jpeg_filter (QVBoxLayout *v, QWidget *panel);
 
 private slots:
   void onTick ();
