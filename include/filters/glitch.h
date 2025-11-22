@@ -23,6 +23,10 @@ public:
         return;
       }
 
+    // ==========================
+    // PHASE 1 — JPEG COMPRESSION
+    // ==========================
+
     set_quality (1);
     cv::Mat cur = src_bgr.clone ();
     jpeg::apply (cur, dst_bgr);
