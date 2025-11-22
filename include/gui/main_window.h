@@ -82,6 +82,7 @@ private:
   void add_sharpen_filter (QVBoxLayout *v, QWidget *panel);
   void add_pixel_sort_filter (QVBoxLayout *v, QWidget *panel);
 
+  void build_glitch_dock ();
   void add_glitch_filter (QVBoxLayout *v, QWidget *panel);
 
 private slots:

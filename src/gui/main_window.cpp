@@ -70,6 +70,7 @@ void main_window::build_ui ()
 
 void main_window::build_dock ()
 {
+  build_glitch_dock();
   build_source_dock ();
 
   auto *dock = new QDockWidget (tr ("Settings"), this);
@@ -87,8 +88,6 @@ void main_window::build_dock ()
   add_sharpen_filter (v, panel);
   add_pixel_sort_filter (v, panel);
 
-  add_glitch_filter (v, panel);
-
   v->addStretch (1);
 
   panel->setLayout (v);
@@ -96,14 +95,48 @@ void main_window::build_dock ()
   addDockWidget (Qt::RightDockWidgetArea, dock);
 }
 
+void main_window::build_glitch_dock ()
+{
+  auto *dock = new QDockWidget (tr ("Glitch Filter"), this);
+  dock->setFeatures (QDockWidget::NoDockWidgetFeatures);
+  dock->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+  auto *panel = new QWidget (dock);
+  auto *v = new QVBoxLayout (panel);
+  v->setContentsMargins (8, 8, 8, 8);
+  v->setSpacing (8);
+
+  add_glitch_filter (v, panel);
+
+  v->addStretch (1);
+  panel->setLayout (v);
+  dock->setWidget (panel);
+
+  addDockWidget (Qt::RightDockWidgetArea, dock);
+}
+
 void main_window::add_glitch_filter (QVBoxLayout *v, QWidget *panel)
 {
-  cb_glitch = new QCheckBox (tr ("Glitch"), panel);
+  cb_glitch = new QCheckBox (tr ("Enable Glitch"), panel);
   v->addWidget (cb_glitch);
 
   connect (cb_glitch, &QCheckBox::toggled, this, [this] (bool on) {
-    if (auto base = engine->find_filter ("glitch"))
-      base->set_enabled (on);
+    if (auto f = engine->find_filter ("glitch"))
+      f->set_enabled (on);
+
+    if (on)
+      {
+        if (cb_grayscale && !cb_grayscale->isChecked())
+          cb_grayscale->setChecked(true);
+
+        if (cb_jpeg && !cb_jpeg->isChecked())
+          cb_jpeg->setChecked(true);
+
+        if (sl_jpeg_quality)
+          {
+            sl_jpeg_quality->setValue(0);
+          }
+      }
   });
 }
 
