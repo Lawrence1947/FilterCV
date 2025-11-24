@@ -93,7 +93,17 @@ bool cv_engine::grab ()
                 }
             }
 
-          current_bgr = std::move (frame);
+          cv::Mat flipped_frame;
+          if (src == source::camera)
+            {
+              cv::flip (frame, flipped_frame, 1);
+              current_bgr = std::move (flipped_frame);
+            }
+          else
+            {
+              current_bgr = std::move (frame);
+            }
+
           return true;
         }
     }
